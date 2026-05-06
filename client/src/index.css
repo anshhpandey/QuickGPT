@@ -1,0 +1,62 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@import 'tailwindcss';
+
+@custom-variant dark (& :where (.dark , .dark *));
+
+*{
+  font-family: 'outfit', sans-serif;
+}
+
+
+@theme {
+  --color-primary : #E6CCFF
+}
+
+::-webkit-scrollbar{
+  display: none;
+} */
+
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+@import 'tailwindcss';
+
+* {
+  font-family: 'Outfit', sans-serif;
+}
+/* @custom-variant dark (& :where (.dark , .dark *)); */
+
+@custom-variant dark (&:where(.dark, .dark *));
+@theme {
+  --color-primary: #E6CCFF;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+.reset-tw :not(pre):not(code){
+  all:revert;
+}
+
+.loader div:nth-child(2){
+  animation-delay: 0.2s;
+}
+.loader div:nth-child(3){
+  animation-delay: 0.4s;
+}
+
+/* Light mode placeholder */
+input.chat-input::placeholder {
+  color: #2f2f30; /* gray-500 */
+}
+
+/* Dark mode placeholder */
+.dark input.chat-input::placeholder {
+  color: #b2b7c1; /* gray-400 */
+}
