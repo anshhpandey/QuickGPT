@@ -8,17 +8,19 @@ import './assets/prism.css'
 import Loading from "./pages/Loading";
 import { useAppContext } from "./context/AppContext";
 import Login from "./pages/Login";
+import {Toaster} from 'react-hot-toast'
 
 
 const App = () => {
 
-  const {user} = useAppContext()
+  const {user,loadinUser} = useAppContext()
 
   const {pathname} = useLocation()
-  if(pathname === '/loading') return <Loading/>
+  if(pathname === '/loading' || loadinUser) return <Loading/>
 
   return (
     <>
+    <Toaster/>
      <div className="
   bg-linear-to-r from-[#dfdfdf] to-[#b3b3b0] text-black
   dark:bg-linear-to-b dark:from-[#242124] dark:to-[#000000]

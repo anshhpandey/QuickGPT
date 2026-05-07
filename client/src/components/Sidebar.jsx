@@ -12,15 +12,38 @@ import {
   Moon,
 } from "lucide-react";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
-  const { user, chats, setSelectedChats, theme, setTheme, navigate } =
-    useAppContext();
+  const { user, chats, setSelectedChats, theme, setTheme, navigate ,createNewChat,axios,setChats,fetchUsersChats, setToken,token } = useAppContext();
   const [search, setSearch] = useState("");
+
+  const logout = ()=>{
+    localStorage.removeItem('token')
+    setToken(null)
+    toast.success('Logged out Successfully')
+  }
+
+  const deleteChat = async (e,chatId) => {
+    try {
+      e.stopPropagation()
+      const confirm = window.confirm("Are you sure want to delete chat")
+      if(!confirm) return
+      const {data} = await axios.post('/api/chat/delete',{chatId},{headers: {Authorization: `Bearer ${token}`}})
+      if(data.success){
+        setChats(prev => prev.filter(chat=>chat._id !== chatId))
+        await fetchUsersChats()
+        toast.success(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+    
+  }
 
   return (
     <div className="flex flex-col h-screen min-w-72 p-5 
-  bg-gradient-to-r from-[#dfdfdf] to-[#dbdbd9] text-black
+  bg-linear-to-r from-[#dfdfdf] to-[#dbdbd9] text-black
   dark:bg-linear-to-b dark:from-[#242124] dark:to-[#000000]
   dark:text-white
   border-r-4 border-gray-400/40 dark:border-[#80609F]
@@ -33,7 +56,7 @@ const Sidebar = () => {
       />
 
       {/* New Chat Button */}
-      <button onClick={()=>navigate('./')}  className="flex justify-center items-center w-full py-2 mt-5 text-white bg-linear-to-r from-[#A456F7] to-[#556c92] text-sm rounded-full cursor-pointer">
+      <button onClick={createNewChat}  className="flex justify-center items-center w-full py-2 mt-5 text-white bg-linear-to-r from-[#A456F7] to-[#556c92] text-sm rounded-full cursor-pointer">
         <span className="mr-2 text-xl">+</span>
         New Chat
       </button>
@@ -77,7 +100,10 @@ const Sidebar = () => {
                   {moment(chat.updatedAt).fromNow()}
                 </p>
               </div>
-              <Trash2 className="opacity-0 group-hover:opacity-100 mt-2 transition w-5 cursor-pointer text-gray-700 dark:text-white" />
+              <Trash2 onClick={e=>toast.promise(deleteChat(e,chat._id),{
+                loading: 'Deleting..'
+              })}
+              className="opacity-0 group-hover:opacity-100 mt-2 transition w-5 cursor-pointer text-gray-700 dark:text-white" />
             </div>
           ))}
       </div>
@@ -145,7 +171,7 @@ const Sidebar = () => {
           {user ? user.name : "Login your Account"}
          </p>
          {
-          user && <img src={assets.logout_icon} className="h-5 cursor-pointer hidden not-dark:invert group-hover:block"/>
+          user && <img src={assets.logout_icon} onClick={logout} className="h-5 cursor-pointer hidden not-dark:invert group-hover:block"/>
          }
 
        </div>
